@@ -8,6 +8,10 @@ venv/
 env/
 .env
 
+# Data and User sessions
+data/
+debug_log.txt
+
 # IDEs
 .vscode/
 .idea/
