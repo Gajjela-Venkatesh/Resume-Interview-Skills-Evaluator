@@ -57,9 +57,6 @@ The app will be available at `http://127.0.0.1:8000`.
 Developed to empower the next generation of professionals.
 
 OUTPUTS:
-
-
-
                                        <img width="602" height="287" alt="image" src="https://github.com/user-attachments/assets/9f0e62cb-c7ef-47c3-be64-9fe9c9ccc265" />
                                        <img width="602" height="285" alt="image" src="https://github.com/user-attachments/assets/b76d6b86-1666-41ab-a3d1-8ae4f7c30e49" />
                                        <img width="602" height="285" alt="image" src="https://github.com/user-attachments/assets/8f745f33-6424-46f4-8f8b-2f1ba2da36d0" />
@@ -67,7 +64,6 @@ OUTPUTS:
                                        <img width="602" height="287" alt="image" src="https://github.com/user-attachments/assets/2fabd5a5-a9bc-44de-8972-f89a5e477743" />
                                        <img width="602" height="283" alt="image" src="https://github.com/user-attachments/assets/db5ebbb6-bd10-48c6-82d7-badb2e335aff" />
                                        <img width="602" height="287" alt="image" src="https://github.com/user-attachments/assets/47128e43-cacf-41f0-8539-7bc7cce04f38" />
-                                       
                                        <img width="602" height="285" alt="image" src="https://github.com/user-attachments/assets/ca3713eb-29ed-4088-9638-a4bb43ccde23" />
                                        <img width="602" height="286" alt="image" src="https://github.com/user-attachments/assets/129dc983-d7aa-4a9c-8cc5-3a9d5b77b547" />
                                        <img width="602" height="285" alt="image" src="https://github.com/user-attachments/assets/71ca9b4f-0db5-449c-947f-1d4e131dc735" />
