@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+  .hero {
+    text-align: center;
+    padding: 3rem 0;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .mode-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mode-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .mode-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .mode-card h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .mode-card p {
+    color: #666;
+    margin-bottom: 2rem;
+    flex-grow: 1;
+  }
+
+  .btn-select {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.8rem 2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background 0.3s;
+  }
+
+  .mode-card:hover .btn-select {
+    background-color: var(--secondary-color);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Resume & Interview Skills Evaluator</h1>
+</section>
+
+<section class="mode-select">
+  <div class="mode-grid">
+    <a href="/resume" class="mode-card">
+      <div class="mode-icon">📄</div>
+      <h2>Resume Evaluator</h2>
+      <p>Analyze your Resume/CV against industry standards or specific job descriptions. PDF/Word support.</p>
+      <span class="btn-select">Start Evaluation</span>
+    </a>
+
+    <a href="/interview" class="mode-card">
+      <div class="mode-icon">🎤</div>
+      <h2>Interview Practice</h2>
+      <p>Generate interview questions and get graded on clarity, relevance, accuracy, and confidence.</p>
+      <span class="btn-select">Start Evaluation</span>
+    </a>
+  </div>
+</section>
+
+<section class="platform-info">
+  <div class="feature-card" style="max-width: 800px; margin: 0 auto; text-align: center;">
+    <h2>Why use our Platform?</h2>
+    <p>Using advanced IBM Generative AI, we provide objective, rubric-based evaluations to help you improve your
+      writing, career presence, and communication skills.</p>
+  </div>
+</section>
+{% endblock %}

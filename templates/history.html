@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="history-header" style="margin-bottom: 2rem;">
+    <h1>Evaluation History</h1>
+    <p>Track your progress and review past assessments across all modes.</p>
+</section>
+
+<section class="history-container">
+    {% if history %}
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Mode</th>
+                <th>Context / Topic</th>
+                <th>Score</th>
+                <th>Grade</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in history %}
+            <tr>
+                <td>{{ item.timestamp[:10] if item.timestamp else "N/A" }}</td>
+                <td>
+                    {% if item.mode == 'resume' %}
+                    <span class="badge badge-resume">Resume</span>
+                    {% elif item.mode == 'interview' %}
+                    <span class="badge badge-interview">Interview</span>
+                    {% else %}
+                    <span class="badge badge-essay">Essay</span>
+                    {% endif %}
+                </td>
+                <td class="prompt-preview">
+                    {% if item.mode == 'resume' %}
+                    {{ item.filename if item.filename else "Resume File" }}
+                    {% elif item.mode == 'interview' %}
+                    {{ (item.question[:50] if item.question else "Interview") }}...
+                    {% else %}
+                    {{ (item.prompt[:50] if item.prompt else "Essay") }}...
+                    {% endif %}
+                </td>
+                <td class="score">{{ item.evaluation.scores.total if item.evaluation and item.evaluation.scores else
+                    "N/A" }}/100</td>
+                <td><strong>{{ item.evaluation.formatted.letter_grade if item.evaluation and item.evaluation.formatted
+                        else "N/A" }}</strong></td>
+                <td>
+                    <button class="btn btn-small btn-secondary" disabled title="Details feature coming soon">View
+                        Details</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+        <h2>No Evaluations Yet</h2>
+        <p>Start your first evaluation to see your history here.</p>
+        <a href="/" class="btn btn-primary">Choose a Mode</a>
+    </div>
+    {% endif %}
+</section>
+
+<style>
+    .badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .badge-essay {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .badge-resume {
+        background: #f3e5f5;
+        color: #7b1fa2;
+    }
+
+    .badge-interview {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .history-table th,
+    .history-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+
+    .history-table th {
+        background: #f8f9fa;
+        color: #666;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .prompt-preview {
+        max-width: 300px;
+        color: #555;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+</style>
+{% endblock %}

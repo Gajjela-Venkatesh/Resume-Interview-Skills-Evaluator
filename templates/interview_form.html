@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="form-header">
+    <h1>AI Interview Practice & Evaluator</h1>
+    <p>Generate interview questions or practice your responses and get graded on clarity, relevance, accuracy, and
+        confidence.</p>
+</section>
+
+<!-- Question Generation Section -->
+<section class="submission-form"
+    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
+    <h2 style="color: white; margin-top: 0;">🎯 Generate Interview Questions</h2>
+    <p style="color: rgba(255,255,255,0.9); margin-bottom: 1.5rem;">Let AI create tailored interview questions for your
+        role and difficulty level</p>
+
+    <div id="question-generator">
+        <div class="form-group-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="gen_job_role" style="color: white;">Job Role:</label>
+                <input type="text" id="gen_job_role" placeholder="e.g. Software Engineer, Product Manager..." required>
+            </div>
+            <div class="form-group">
+                <label for="gen_job_description" style="color: white;">Job Context (Optional):</label>
+                <input type="text" id="gen_job_description" placeholder="e.g. FinTech startup, AI/ML focus...">
+            </div>
+        </div>
+
+        <div class="form-group-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="difficulty_level" style="color: white;">Difficulty Level:</label>
+                <select id="difficulty_level"
+                    style="padding: 0.75rem; border-radius: 8px; border: none; font-size: 1rem;">
+                    <option value="easy">Easy - Fundamentals & Basics</option>
+                    <option value="medium" selected>Medium - Applied Knowledge</option>
+                    <option value="hard">Hard - Advanced Concepts</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="number_of_questions" style="color: white;">Number of Questions:</label>
+                <input type="number" id="number_of_questions" min="1" max="10" value="3"
+                    style="padding: 0.75rem; border-radius: 8px; border: none; font-size: 1rem;">
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" id="generate-btn" class="btn"
+                style="background: white; color: #667eea; font-weight: bold; border: none;">
+                ✨ Generate Questions
+            </button>
+        </div>
+
+        <div id="generated-questions" style="margin-top: 1.5rem; display: none;">
+            <h3 style="color: white;">Generated Questions:</h3>
+            <div id="questions-list"
+                style="background: rgba(255,255,255,0.95); padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
+                <!-- Questions will be inserted here -->
+            </div>
+        </div>
+
+        <div id="generation-loading" style="display: none; text-align: center; margin-top: 1rem;">
+            <p style="color: white; font-size: 1.1rem;">🤖 AI is generating questions...</p>
+        </div>
+    </div>
+</section>
+
+<!-- Answer Evaluation Section -->
+<section class="submission-form">
+    <h2 style="margin-top: 0;">📝 Answer an Interview Question</h2>
+    <form action="/evaluate/interview" method="post" id="evaluation-form">
+        <div class="form-group-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="job_role">Job Role:</label>
+                <input type="text" id="job_role" name="job_role" placeholder="e.g. Software Engineer, Sales Manager..."
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="job_description">Job Context (Optional):</label>
+                <input type="text" id="job_description" name="job_description"
+                    placeholder="e.g. FinTech startup, Fortune 500 company...">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="question">Interview Question:</label>
+            <textarea id="question" name="question" rows="2" placeholder="Paste or type the interview question here..."
+                required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="answer">Your Answer:</label>
+            <textarea id="answer" name="answer" rows="8" placeholder="Paste or type your full response here..."
+                required></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Score My Answer</button>
+            <a href="/" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </form>
+</section>
+
+<section class="features" style="margin-top: 3rem;">
+    <h2>What we evaluate</h2>
+    <div class="feature-grid">
+        <div class="feature-card">
+            <h3>Clarity & Communication</h3>
+            <p>How well you articulate your thoughts and structure your verbal response.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Relevance to Question</h3>
+            <p>Directness of your answer and use of specific examples (STAR method).</p>
+        </div>
+        <div class="feature-card">
+            <h3>Technical Accuracy</h3>
+            <p>Correct use of industry terminology and domain-specific knowledge.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Confidence & Delivery</h3>
+            <p>Professional presence, enthusiasm, and assertive communication style.</p>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const generateBtn = document.getElementById('generate-btn');
+        const generatedQuestionsDiv = document.getElementById('generated-questions');
+        const questionsListDiv = document.getElementById('questions-list');
+        const loadingDiv = document.getElementById('generation-loading');
+
+        generateBtn.addEventListener('click', async function () {
+            const jobRole = document.getElementById('gen_job_role').value.trim();
+            const jobDescription = document.getElementById('gen_job_description').value.trim();
+            const difficultyLevel = document.getElementById('difficulty_level').value;
+            const numberOfQuestions = document.getElementById('number_of_questions').value;
+
+            if (!jobRole) {
+                alert('Please enter a job role');
+                return;
+            }
+
+            // Show loading, hide previous results
+            loadingDiv.style.display = 'block';
+            generatedQuestionsDiv.style.display = 'none';
+            generateBtn.disabled = true;
+
+            try {
+                // Create form data
+                const formData = new FormData();
+                formData.append('job_role', jobRole);
+                formData.append('job_description', jobDescription);
+                formData.append('difficulty_level', difficultyLevel);
+                formData.append('number_of_questions', numberOfQuestions);
+
+                // Call the API
+                const response = await fetch('/api/generate-questions', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate questions');
+                }
+
+                const data = await response.json();
+
+                // Display questions
+                if (data.mode === 'question_generation' && data.questions && data.questions.length > 0) {
+                    displayQuestions(data.questions, jobRole, jobDescription);
+                } else {
+                    throw new Error('Invalid response format');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to generate questions. Please try again.');
+            } finally {
+                loadingDiv.style.display = 'none';
+                generateBtn.disabled = false;
+            }
+        });
+
+        function displayQuestions(questions, jobRole, jobDescription) {
+            questionsListDiv.innerHTML = '';
+
+            questions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.style.cssText = `
+                background: white;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 1rem;
+                margin-bottom: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            `;
+
+                questionCard.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="flex: 1;">
+                        <strong style="color: #667eea; font-size: 0.9rem;">Question ${index + 1}</strong>
+                        <p style="margin: 0.5rem 0 0 0; color: #333; font-size: 1rem;">${question}</p>
+                    </div>
+                    <button class="use-question-btn" style="
+                        background: #667eea;
+                        color: white;
+                        border: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 0.9rem;
+                        white-space: nowrap;
+                        margin-left: 1rem;
+                    ">Use This ➜</button>
+                </div>
+            `;
+
+                // Hover effects
+                questionCard.addEventListener('mouseenter', function () {
+                    this.style.borderColor = '#667eea';
+                    this.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.2)';
+                });
+
+                questionCard.addEventListener('mouseleave', function () {
+                    this.style.borderColor = '#e0e0e0';
+                    this.style.boxShadow = 'none';
+                });
+
+                // Click to use question
+                const useBtn = questionCard.querySelector('.use-question-btn');
+                useBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    useQuestion(question, jobRole, jobDescription);
+                });
+
+                questionCard.addEventListener('click', function () {
+                    useQuestion(question, jobRole, jobDescription);
+                });
+
+                questionsListDiv.appendChild(questionCard);
+            });
+
+            generatedQuestionsDiv.style.display = 'block';
+
+            // Scroll to questions
+            generatedQuestionsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function useQuestion(question, jobRole, jobDescription) {
+            // Fill in the evaluation form
+            document.getElementById('job_role').value = jobRole;
+            document.getElementById('job_description').value = jobDescription;
+            document.getElementById('question').value = question;
+
+            // Scroll to the answer form
+            document.getElementById('evaluation-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Focus on the answer textarea
+            setTimeout(() => {
+                document.getElementById('answer').focus();
+            }, 500);
+
+            // Visual feedback
+            const answerSection = document.querySelector('.submission-form:not([style*="gradient"])');
+            answerSection.style.border = '3px solid #667eea';
+            setTimeout(() => {
+                answerSection.style.border = '';
+            }, 2000);
+        }
+    });
+</script>
+{% endblock %}

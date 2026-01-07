@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='/css/results.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="evaluation-header">
+    <h1>Resume Evaluation Results</h1>
+    <div class="evaluation-summary">
+        <div class="total-score">
+            <span class="score-value">{{ evaluation.scores.total }}/100</span>
+            <span class="grade">{{ evaluation.formatted.letter_grade }}</span>
+        </div>
+        <div class="prompt-container">
+            <h3>Job Description Context:</h3>
+            <p class="prompt-text">{{ job_description if job_description else "No context provided" }}</p>
+        </div>
+    </div>
+</section>
+
+<section class="score-breakdown">
+    <h2>Score Breakdown</h2>
+    <div class="score-grid">
+        {% set formatted = evaluation.formatted %}
+        {% for cat_key, cat_data in modes.resume.categories.items() %}
+        <div class="score-card">
+            <h3>{{ cat_data.name }}</h3>
+            <div class="score-display">
+                <div class="score">
+                    {{ evaluation.scores[cat_key] }}/{{ cat_data.max_score }}
+                </div>
+                <div class="percentage">{{ formatted[cat_key + '_pct'] }}%</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" style="width: {{ formatted[cat_key + '_pct'] }}%"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="detailed-feedback">
+    <h2>Detailed Feedback</h2>
+    {% for cat_key, cat_data in modes.resume.categories.items() %}
+    <div class="feedback-category">
+        <h3>{{ cat_data.name }} ({{ evaluation.scores[cat_key] }}/{{ cat_data.max_score }})</h3>
+        <div class="feedback-section">
+            <h4>Strengths</h4>
+            <ul>
+                {% for point in evaluation.feedback[cat_key].strengths %}
+                <li>{{ point }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="feedback-section">
+            <h4>Improvements</h4>
+            <ul>
+                {% for point in evaluation.feedback[cat_key].improvements %}
+                <li>{{ point }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+<section class="evaluation-summary">
+    <h2>Overall Summary</h2>
+    <div class="summary-box">
+        <p>{{ evaluation.summary }}</p>
+    </div>
+</section>
+
+<div class="action-buttons">
+    <a href="/resume" class="btn btn-primary">Evaluate Another Resume</a>
+    <a href="/history" class="btn btn-secondary">View History</a>
+</div>
+{% endblock %}

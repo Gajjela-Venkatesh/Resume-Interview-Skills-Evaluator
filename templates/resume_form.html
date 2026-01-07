@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="form-header">
+    <h1>Resume/CV Evaluator</h1>
+    <p>Analyze your Resume/CV for formatting, content relevance, keywords, and tone.</p>
+</section>
+
+<section class="submission-form">
+    <form action="/evaluate/resume" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="job_description">Job Description (Optional):</label>
+            <p class="form-help">Providing a job description helps the AI evaluate your resume's relevance and keyword
+                alignment.</p>
+            <textarea id="job_description" name="job_description" rows="5"
+                placeholder="Paste the target job description here..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="resume_file">Upload Resume/CV (PDF or DOCX):</label>
+            <input type="file" id="resume_file" name="resume_file" class="form-control" accept=".pdf,.docx" required>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Submit for Evaluation</button>
+            <a href="/" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </form>
+</section>
+
+<section class="features" style="margin-top: 3rem;">
+    <h2>Evaluation Categories</h2>
+    <div class="feature-grid">
+        <div class="feature-card">
+            <h3>Formatting & Presentation</h3>
+            <p>Layout readability, visual appeal, and consistent font/bullet usage.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Content Relevance</h3>
+            <p>Alignment of your experience and qualifications with industry standards.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Keywords & Skills</h3>
+            <p>ATS optimization and presence of critical industry-specific terms.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Professional Tone</h3>
+            <p>Clarity, directness, and use of action verbs in your descriptions.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
